@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+		
+<mapper namespace = "PurchaseMapper">
+
+	<resultMap id = "purchaseSelectMap" type = "com.model2.mvc.service.domain.Purchase">
+		<result property = "tranNo" column = "tran_no" jdbcType = "NUMERIC"/>
+		<result property = "purchaseProd.prodNo" column = "prod_no" jdbcType = "NUMERIC"/>
+		<result property = "buyer.userId" column = "buyer_id" jdbcType = "VARCHAR"/>
+		<result property = "paymentOption" column = "payment_option" jdbcType = "VARCHAR"/>
+		<result property = "receiverName" column = "receiver_name" jdbcType = "VARCHAR"/>
+		<result property = "receiverPhone" column = "receiver_phone" jdbcType = "VARCHAR"/>
+		<result property = "dlvyAddr" column = "dlvy_addr" jdbcType = "VARCHAR"/>
+		<result property = "dlvyRequest" column = "dlvy_request" jdbcType = "VARCHAR"/>
+		<result property = "tranCode" column = "tran_status_code" jdbcType = "VARCHAR"/>
+		<result property = "orderDate" column = "order_date" jdbcType = "DATE"/>
+		<result property = "dlvyDate" column = "dlvy_date" jdbcType = "DATE"/>
+		
+	</resultMap>
+	
+	<insert id="addPurchase" parameterType="purchase"> 
+		INSERT INTO transaction
+	 	VALUES ( seq_transaction_tran_no.NEXTVAL, #{purchaseProd.prodNo:INTEGER},
+  			#{buyer.userId:VARCHAR}, #{paymentOption:VARCHAR}, #{receiverName:VARCHAR}, 
+  			#{receiverPhone:VARCHAR}, #{dlvyAddr:VARCHAR}, #{dlvyRequest:VARCHAR},
+   			#{tranCode:VARCHAR}, SYSDATE, #{dlvyDate:DATE} ) 
+  	 </insert>
+	
+	<select id="findPurchase" parameterType = "Integer" resultMap = "purchaseSelectMap">
+		SELECT *
+		FROM transaction
+		WHERE tran_no = #{tranNo}
+	</select>
+	
+	<select id="findPurchase2" parameterType = "Integer" resultMap = "purchaseSelectMap">
+		SELECT *
+		FROM transaction
+		WHERE prod_no = #{prodNo}
+	</select>
+	
+	<select id="getPurchaseList" parameterType = "map" resultMap = "purchaseSelectMap">
+		SELECT *
+		FROM ( SELECT inner_table.* , ROWNUM AS row_seq
+				FROM ( SELECT *
+						FROM transaction
+						WHERE buyer_id = #{buyerId}
+						ORDER BY prod_no ) inner_table
+				WHERE ROWNUM &lt;=#{search.endRowNum} )
+		WHERE row_seq BETWEEN #{search.startRowNum} AND #{search.endRowNum}
+	</select>
+	
+	<update id="updatePurchase" parameterType = "com.model2.mvc.service.domain.Purchase">
+		UPDATE transaction
+		SET payment_option = #{paymentOption:VARCHAR},
+			receiver_name = #{receiverName:VARCHAR},
+			receiver_phone = #{receiverPhone:VARCHAR},
+			dlvy_addr = #{dlvyAddr:VARCHAR},
+			dlvy_request = #{dlvyRequest:VARCHAR},
+			dlvy_date = #{dlvyDate:DATE}
+		WHERE tran_no = #{tranNo:NUMERIC}
+	</update>
+	
+	<update id="updateTranCode" parameterType = "com.model2.mvc.service.domain.Purchase">
+		UPDATE transaction
+		SET tran_status_code = #{tranStatusCode}
+		WHERE tran_no = #{tranNo}
+	</update>
+	
+	<select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT user_id , user_name , email
+						FROM users
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			user_id = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 		user_name = #{searchKeyword}
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+	
+</mapper>
+
