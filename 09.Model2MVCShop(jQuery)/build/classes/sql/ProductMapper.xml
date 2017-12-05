@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		
+		
+<mapper namespace = "ProductMapper">
+
+	<resultMap id="productSelectMap" type="com.model2.mvc.service.domain.Product" >
+		<result property = "prodNo" column =  "prod_no" jdbcType = "NUMERIC"/>
+		<result property = "prodName" column =  "prod_name" jdbcType = "VARCHAR"/>
+		<result property = "prodDetail" column =  "prod_detail" jdbcType = "VARCHAR"/>
+		<result property = "manuDate" column =  "manufacture_day" jdbcType = "VARCHAR"/>
+		<result property = "price" column =  "price" jdbcType = "NUMERIC"/>
+		<result property = "fileName" column =  "image_file" jdbcType = "VARCHAR"/>
+		<result property = "regDate" column =  "reg_date" jdbcType = "DATE"/>
+		<result property = "proTranCode" column = "tran_status_code" jdbcType = "VARCHAR"/>
+	</resultMap>
+
+	
+	<select id="findProduct" parameterType = "Integer" resultMap = "productSelectMap">
+		SELECT *
+		FROM product
+		WHERE prod_no = #{prodNo}
+	</select>
+	
+	<select id="getProductList" parameterType = "search" resultMap = "productSelectMap">
+		SELECT *
+		FROM ( SELECT inner_table.* , ROWNUM AS row_seq
+				FROM	(SELECT t.tran_status_code, p.prod_no, p.prod_name, p.prod_detail, 
+								p.manufacture_day, p.price, p.image_file, p.reg_date
+							FROM product p , transaction t
+							<where>
+								t.prod_no(+) = p.prod_no
+								<if test = "searchCondition != null">
+									<if test = "searchCondition == 0 and searchKeyword !='' ">
+										AND p.prod_name LIKE '%${searchKeyword}%'
+									</if>
+									<if test = "searchCondition == 1 and searchKeyword !='' ">
+										AND p.price LIKE '%${searchKeyword}%'
+									</if>				
+								</if>
+							</where>
+							
+							<choose>
+								<when test = "sort == null">
+									ORDER BY prod_no ) inner_table
+								</when>
+								<when test="sort != null">
+									<choose>
+										<when test = "sort == 'no'">
+											ORDER BY prod_no ${order} ) inner_table
+										</when>
+										<when test = "sort == 'prodName'">
+											ORDER BY prod_name ${order} ) inner_table
+										</when>
+										<when test = "sort == 'price'">
+											ORDER BY price ${order} ) inner_table
+										</when>
+										<when test = "sort == 'manuDate'">
+											ORDER BY manufacture_day ${order} ) inner_table
+										</when>
+										<when test = "sort == 'tranCode'">
+											ORDER BY tran_status_code ${order} ) inner_table
+										</when>
+									</choose>
+								</when>
+							</choose>
+				WHERE ROWNUM &lt; = ${endRowNum} )
+		WHERE row_seq BETWEEN ${startRowNum} AND ${endRowNum}
+	
+	</select>
+	
+	<insert id="addProduct" parameterType = "com.model2.mvc.service.domain.Product">
+		INSERT
+		INTO product (prod_no, prod_name, prod_detail, manufacture_day, price, image_file, reg_date)
+		VALUES (seq_product_prod_no.nextval, 
+		#{prodName:VARCHAR}, 
+		#{prodDetail:VARCHAR}, 
+		#{manuDate:DATE}, 
+		#{price:NUMERIC}, 
+		#{fileName:VARCHAR}, 
+		SYSDATE)
+	</insert>
+	
+	<update id="updateProduct" parameterType = "com.model2.mvc.service.domain.Product">
+		UPDATE product
+		<set>
+			prod_name = #{prodName},
+			prod_detail = #{prodDetail},
+			manufacture_day = #{manuDate},
+			price = #{price},
+			image_file = #{fileName}
+		</set>
+		<where>
+			prod_no = #{prodNo}
+		</where>
+	</update>
+	
+	<select  id="getTotalCount"  parameterType="search"	 resultType="int">
+	  	SELECT COUNT(*)
+	  	FROM(	SELECT user_id , user_name , email
+						FROM users
+						<if test="searchCondition != null">
+							<where>
+								<if test="searchCondition == 0 and searchKeyword !='' ">
+						 			user_id = #{searchKeyword}
+								</if>
+								<if test="searchCondition == 1 and searchKeyword !='' ">
+						 			user_name = #{searchKeyword}
+								</if>
+							</where>
+						</if> ) countTable						
+	 </select>
+
+</mapper>
