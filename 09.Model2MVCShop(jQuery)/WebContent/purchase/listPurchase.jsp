@@ -9,13 +9,39 @@
 <title>구매 목록조회</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 
 <script type="text/javascript">
-<!--
-function fncGetList(currentPage) {
-	document.getElementById("currentPage").value = currentPage;
-	document.detailForm.submit();
-	} -->
+
+	function fncGetList(currentPage) {
+		document.getElementById("currentPage").value = currentPage;
+		document.detailForm.submit();
+	}
+	
+	$(function(){
+		
+
+		$(".ct_list_pop td:nth-child(1)").bind("click",function(){
+			
+			self.location = "/purchase/getPurchase?tranNo="+$(this).text().trim();
+		}).css("color","red")
+		
+		$(".ct_list_pop td:nth-child(3)").bind("click",function(){
+			self.location = "/user/getUser?userId="+$(this).text().trim();
+		}).css("color","blue")
+		
+		$(".ct_list_pop td:nth-child(11)").bind("click",function(){
+			
+			var index = $(".ct_list_pop td:nth-child(11)").index(this);
+						
+			self.location ="/purchase/updateTranCode?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(11)").index(this)]).val()
+			+"&proTranCode="+$($("input[name='tranCode']")[$(".ct_list_pop td:nth-child(11)").index(this)]).val()+"&menu=${menu}&page=1"
+			
+			
+		})
+				
+	});
+	
 </script>
 </head>
 
@@ -31,7 +57,7 @@ function fncGetList(currentPage) {
 		<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left: 10px;">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="93%" class="ct_ttl01">구매 목록조회</td>
+					<td width="93%" class="ct_ttl01">구매 목록조회 ${menu} </td>
 				</tr>
 			</table>
 		</td>
@@ -62,47 +88,50 @@ function fncGetList(currentPage) {
 
 	<c:set var = "i" value = "0"></c:set>
 	<c:forEach var = "purchase" items = "${list }">
+		<input type="hidden" name="tranNo" value="${product.proTranCode.trim() }">
+		<input type="hidden" name="tranCode" value="${purchase.tranCode.trim() }">
+		<input type="hidden" name="prodNo" value="${purchase.purchaseProd.prodNo }">
 		<c:set var = "i" value = "${i+1 }" />
 	
 	
-	<tr class="ct_list_pop">
-		<td align="center">
-			<a href="/purchase/getPurchase?tranNo=${purchase.tranNo }">${purchase.tranNo }</a>
-		</td>
-		<td></td>
-		<td align="left">
-			<a href="/user/getUser?userId=${purchase.buyer.userId }">${purchase.buyer.userId }</a>
-		</td>
-		<td></td>
-		<td align="left">${purchase.receiverName }</td>
-		<td></td>
-		<td align="left">${purchase.receiverPhone }</td>
-		<td></td>
-		<td align="left">
-			
-			<c:if test = "${purchase.tranCode.trim().equals('01')}">
-				현재 구매 완료 상태입니다.
-			</c:if>
-			
-			<c:if test = "${purchase.tranCode.trim().equals('02')}">
-				현재 배송 중입니다.
-			</c:if>
-			
-			<c:if test = "${purchase.tranCode.trim().equals('03')}">
-				현재 배송 완료 상태 입니다. 
-			</c:if>		
-
-		</td>
-		<td></td>
-		<td align="left">
-			<c:if test= "${purchase.tranCode.trim().equals('02')}">
-				<a href="/purchase/updateTranCode?prodNo=${purchase.purchaseProd.prodNo}&proTranCode=${purchase.tranCode.trim()}&menu=${requestScope.menu}&page=1">물품도착</a>
-			</c:if>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="11" bgcolor="D6D7D6" height="1"></td>
-	</tr>
+		<tr class="ct_list_pop">
+			<td align="center">${purchase.tranNo } </td>
+			<td></td>
+			<td align="left">
+				<!-- <a href="/user/getUser?userId=${purchase.buyer.userId }">${purchase.buyer.userId }</a> -->
+				${purchase.buyer.userId }
+			</td>
+			<td></td>
+			<td align="left">${purchase.receiverName }</td>
+			<td></td>
+			<td align="left">${purchase.receiverPhone }</td>
+			<td></td>
+			<td align="left">
+				
+				<c:if test = "${purchase.tranCode.trim().equals('01')}">
+					현재 구매 완료 상태입니다.
+				</c:if>
+				
+				<c:if test = "${purchase.tranCode.trim().equals('02')}">
+					현재 배송 중입니다.
+				</c:if>
+				
+				<c:if test = "${purchase.tranCode.trim().equals('03')}">
+					현재 배송 완료 상태 입니다. 
+				</c:if>		
+	
+			</td>
+			<td></td>
+			<td align="left">
+				<c:if test= "${purchase.tranCode.trim().equals('02')}">
+					<!-- <a href="/purchase/updateTranCode?prodNo=${purchase.purchaseProd.prodNo}&proTranCode=${purchase.tranCode.trim()}&menu=${requestScope.menu}&page=1">물품도착</a> -->
+					<font color="red">물품도착</font>
+				</c:if>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="11" bgcolor="D6D7D6" height="1"></td>
+		</tr>
 	
 	</c:forEach>
 	

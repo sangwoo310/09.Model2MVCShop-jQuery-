@@ -31,6 +31,7 @@ public class PurchaseDaoImpl implements PurchaseDao{
 	}
 	
 	public Purchase findPurchase2(int prodNo) throws Exception {
+		System.out.println("here is dao purchase2");
 		return sqlSession.selectOne("PurchaseMapper.findPurchase2", prodNo);
 	}
 	

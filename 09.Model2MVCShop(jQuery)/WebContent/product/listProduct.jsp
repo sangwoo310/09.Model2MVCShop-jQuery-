@@ -26,22 +26,43 @@
 				fncGetUserList(1);
 			});
 			
-			if(${param.menu=='search'}){
-				$(".ct_list_pop td:nth-child(3)").bind("click",function(){
+			$("td.ct_list_b:contains('No')").bind("click",function(){
+				self.location = "/product/listProduct?sort=no&menu=${menu }&order=${search.order}"
+			})
+			
+			$("td.ct_list_b:contains('상품명')").bind("click",function(){
+				self.location = "/product/listProduct?sort=prodName&menu=${menu }&order=${search.order}"
+			})
+			
+			$("td.ct_list_b:contains('가격')").bind("click",function(){
+				self.location = "/product/listProduct?sort=price&menu=${menu }&order=${search.order}"
+			})
+			
+			$("td.ct_list_b:contains('제조일')").bind("click",function(){
+				self.location = "/product/listProduct?sort=manuDate&menu=${menu }&order=${search.order}"
+			})
+			
+			$("td.ct_list_b:contains('현재상태')").bind("click",function(){
+				self.location = "/product/listProduct?sort=tranCode&menu=${menu }&order=${search.order}"
+			})
+			
+			
+			$(".ct_list_pop td:nth-child(3)").bind("click",function(){
+				
+				self.location = "/product/getProduct?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(3)").index(this)]).val()+"&menu=${menu}";
+			});
+			
+			$(".ct_list_pop td:nth-child(9)").bind("click",function(){
+				
+				self.location ="/purchase/updateTranCode?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(9)").index(this)]).val()
+						+"&proTranCode="+$($("input[name='tranCode']")[$(".ct_list_pop td:nth-child(9)").index(this)]).val()+"&menu=manage";
+			})
 					
-					self.location = "/product/getProduct?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(3)").index(this)]).val()+"&menu=search";
-				});
-			}else if(${param.menu=='manage'}){
-				$(".ct_list_pop td:nth-child(3)").bind("click",function(){
-					locProduct();
-					
-				});
-			}
 						
 		});
 		
 		function locProduct(){
-			$("form").attr("method","GET").attr("action","/product/updateProduct?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(3)").index(this)]).val()+"&menu=manage").submit();
+			$("form").attr("method","GET").attr("action","/product/updateProduct?prodNo="+$($("input[name='prodNo']")[$(".ct_list_pop td:nth-child(3)").index(this)]).val()+"&menu=+${menu}").submit();
 		}
 	
 	
@@ -102,7 +123,7 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetUserList('1');">검색</a>
+						<!-- <a href="javascript:fncGetUserList('1');">검색</a> -->
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
@@ -122,19 +143,31 @@
 	</tr>
 	<tr>
 		<td class="ct_list_b" width="100">
-		<a href="/product/listProduct?sort=no&menu=${menu }&order=${search.order} ">No</a></td>
+		<!-- <a href="/product/listProduct?sort=no&menu=${menu }&order=${search.order} ">No</a> -->
+		No
+		</td>
+		
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">
-		<a href="/product/listProduct?sort=prodName&menu=${menu }&order=${search.order}">상품명</a></td>
+		<!-- <a href="/product/listProduct?sort=prodName&menu=${menu }&order=${search.order}">상품명</a> -->
+		상품명
+		</td>
+		
 		<td class="ct_line02"></td>
 		<td class="ct_list_b" width="150">
-		<a href="/product/listProduct?sort=price&menu=${menu }&order=${search.order}">가격</a></td>
+		<!-- <a href="/product/listProduct?sort=price&menu=${menu }&order=${search.order}">가격</a> -->
+		가격
+		</td>
 		<td class="ct_line02"></td>
 		<td class="ct_list_b">
-		<a href="/product/listProduct?sort=manuDate&menu=${menu }&order=${search.order}">제조일</a></td>	
+		<!-- <a href="/product/listProduct?sort=manuDate&menu=${menu }&order=${search.order}">제조일</a> -->
+		제조일
+		</td>	
 		<td class="ct_line02"></td>
 		<td class="ct_list_b">
-		<a href="/product/listProduct?sort=tranCode&menu=${menu }&order=${search.order}">현재상태</a></td>	
+		<!-- <a href="/product/listProduct?sort=tranCode&menu=${menu }&order=${search.order}">현재상태</a> -->
+		현재상태
+		</td>	
 	</tr>
 
 	<tr>
@@ -143,6 +176,8 @@
 	
 	<c:set var = "i" value = "0" />
 	<c:forEach var = "product" items = "${list}">
+		<input type="hidden"name="prodNo" value="${product.prodNo }"/>
+		<input type ="hidden" name="tranCode" value="${product.proTranCode.trim() }"/>
 		<c:set var = "i" value = "${i+1}" />
 		<tr class="ct_list_pop">
 		<td align="center">${ i }</td>
@@ -157,7 +192,7 @@
 					</c:if> -->
 				<!--</c:if> --> 
 				${product.prodName}
-				<input type="hidden"name="prodNo" value="${product.prodNo }"/>
+				
 				<c:if test="${! empty product.proTranCode }">
 					${product.prodName}
 				</c:if>
@@ -169,7 +204,7 @@
 		<td></td>
 		<td align="left">${product.manuDate}</td>
 		<td></td>
-		<td align="left">
+		<td align="left" id="completePurchase">
 			
 			<c:if test = "${requestScope.menu == 'search'}">
 		  	
@@ -227,7 +262,9 @@
 				
 				<c:if test = "${product.proTranCode.trim() == '01' }">	
 					<c:if test = "${! empty product.proTranCode}">
-						구매완료  <a href="/purchase/updateTranCode?prodNo=${product.prodNo}&proTranCode=${product.proTranCode.trim()}&menu=manage">배송하기</a>
+						구매완료  
+						<!-- <a href="/purchase/updateTranCode?prodNo=${product.prodNo}&proTranCode=${product.proTranCode.trim()}&menu=manage">배송하기</a> -->
+						<font id="changeTranCode" color="red">배송하기</font>
 					</c:if>
 				</c:if>
 					  

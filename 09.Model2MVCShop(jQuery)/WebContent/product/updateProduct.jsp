@@ -6,6 +6,7 @@
 <html>
 <head>
 <title>상품확인</title>
+<meta charset="EUC-KR">
 
 	<link rel="stylesheet" href="/css/admin.css" type="text/css">
 	
@@ -15,7 +16,7 @@
 	<script type="text/javascript">
 	
 		$(function(){
-			$("ct_btn01:contains('확인')").bind("click",function(){
+			$(".ct_btn01:contains('확인')").bind("click",function(){
 				self.location ="/product/listProduct?menu=manage"
 			})
 		})
@@ -128,7 +129,8 @@
 					<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 				</td>
 				<td background="/images/ct_btnbg02.gif" class="ct_btn01"  style="padding-top: 3px;">
-					<a href="/product/listProduct?menu=manage">확인</a>
+					<!-- <a href="/product/listProduct?menu=manage">확인</a> -->
+					확인
 				</td>
 							
 				<td width="14" height="23">

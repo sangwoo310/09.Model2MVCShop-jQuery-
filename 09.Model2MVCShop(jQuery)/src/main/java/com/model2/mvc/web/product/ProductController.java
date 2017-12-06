@@ -63,12 +63,12 @@ public class ProductController {
 	
 	@RequestMapping(value="getProduct")
 	public String getProduct( @RequestParam("prodNo") int prodNo, Map map,
-							@RequestParam("menu") String menu,HttpServletResponse response, HttpServletRequest request) throws Exception{
+							@RequestParam("menu") String menu, HttpServletResponse response, HttpServletRequest request) throws Exception{
 		
 		System.out.println("/getProduct.do");
 		
 		Product product = productService.findProduct(prodNo);
-		
+				
 		map.put("product", product);
 		
 		String history = null;
@@ -89,12 +89,12 @@ public class ProductController {
 		System.out.println("메뉴테스트"+menu);
 		
 		if(menu.equals("manage")) {
-			return "forward:/product/updateProduct.jsp";
+			return "forward:/product/updateProductView.jsp";
 		}
 		return "forward:/product/getProduct.jsp";
 	}
 	
-	@RequestMapping(value="updateProduct", method=RequestMethod.GET)
+	@RequestMapping(value="updateProductView", method=RequestMethod.POST)
 	public String updateProduct(@RequestParam("prodNo") int prodNo, Map map ) throws Exception{
 		
 		System.out.println("/updateProductView.do");
@@ -102,6 +102,8 @@ public class ProductController {
 		Product product = productService.findProduct(prodNo);
 		
 		map.put("product", product);
+		
+		System.out.println("너는 누구냐");
 		
 		return "forward:/product/updateProduct.jsp";
 	}
@@ -113,7 +115,10 @@ public class ProductController {
 		
 		productService.updateProduct(product);
 		
-		return "forward:/product/getProduct?prodNo="+product.getProdNo();
+		System.out.println("너구나!!!!!!!!!");
+
+		
+		return "forward:/product/updateProduct.jsp";
 	}
 	
 	@RequestMapping(value="listProduct")

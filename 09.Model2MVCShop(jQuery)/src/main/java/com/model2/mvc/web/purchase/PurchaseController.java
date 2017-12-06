@@ -197,7 +197,9 @@ public class PurchaseController {
 		Product product = productService.findProduct(prodNo);
 		
 		Purchase purchase = purchaseService.findPurchase2(prodNo);
-		
+		System.out.println("12341234"+prodNo);
+		System.out.println("11111"+product);
+		System.out.println("22222"+purchase);
 		if(proTranCode.equals("01")) {
 			purchase.setTranCode("02");
 			product.setProTranCode("02");
@@ -213,7 +215,7 @@ public class PurchaseController {
 		if(proTranCode.equals("02")) {
 			return "forward:/purchase/listPurchase";
 		}
-		return "forward:/product/listProduct";
+		return "forward:/purchase/listPurchase";
 	}
 	
 	@RequestMapping(value="listPurchase")
@@ -238,10 +240,12 @@ public class PurchaseController {
 		
 		Page resultPage = new Page( search.getCurrentPage(), ((Integer)map.get("totalCount")).intValue(), pageUnit, pageSize);
 		System.out.println(resultPage);
+		System.out.println("메뉴값테스트"+request.getParameter("menu"));
 		
 		// Model 과 View 연결
 		model.addAttribute("list", map.get("list"));
 		model.addAttribute("resultPage", resultPage);
+		model.addAttribute("menu",request.getParameter("menu"));
 		model.addAttribute("search", search);
 		
 		

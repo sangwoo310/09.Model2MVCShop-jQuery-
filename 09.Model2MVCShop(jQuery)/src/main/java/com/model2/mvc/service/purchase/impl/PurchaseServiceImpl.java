@@ -32,6 +32,7 @@ public class PurchaseServiceImpl implements PurchaseService{
 	}
 	
 	public Purchase findPurchase2(int prodNo) throws Exception {
+		System.out.println("here is a findpurchase2");
 		return purchaseDao.findPurchase2(prodNo);
 	}
 	

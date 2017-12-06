@@ -7,6 +7,7 @@
 
 <html>
 <head>
+<meta charset="EUC-KR">
 <title>상품정보수정</title>
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
@@ -45,11 +46,11 @@ function fncAddProduct(){
 }
 
 $(function(){
-	$("ct_btn01:contains('수정')").bind("click",function(){
+	$(".ct_btn01:contains('수정')").bind("click",function(){
 		fncAddProduct();
 	})
 	
-	$("ct_btn01:contains('취소')").bind("click",function(){
+	$(".ct_btn01:contains('취소')").bind("click",function(){
 		javascript:history.go(-1);
 	})
 })
@@ -59,9 +60,10 @@ $(function(){
 
 <body bgcolor="#ffffff" text="#000000">
 
-<form name="detailForm" method="get" >
+<form name="detailForm" method="post" >
 
 <input type="hidden" name="prodNo" value="${product.prodNo }"/>
+
 
 <table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
 	<tr>
@@ -71,7 +73,7 @@ $(function(){
 		<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left: 10px;">
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
 				<tr>
-					<td width="93%" class="ct_ttl01">상품수정</td>
+					<td width="93%" class="ct_ttl01">상품수정 </td>
 					<td width="20%" align="right">&nbsp;</td>
 				</tr>
 			</table>
@@ -169,7 +171,8 @@ $(function(){
 						<img src="/images/ct_btnbg01.gif" width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01"	style="padding-top: 3px;">
-						<a href="javascript:fncAddProduct();">수정</a>
+						<!-- <a href="javascript:fncAddProduct();">수정</a> -->
+						수정
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
@@ -179,7 +182,8 @@ $(function(){
 						<img src="/images/ct_btnbg01.gif"width="17" height="23"/>
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-						<a href="javascript:history.go(-1)">취소</a>
+						<!-- <a href="javascript:history.go(-1)">취소</a> -->
+						취소
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23"/>
